@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model admin_access {
+  id              Int      @id @default(autoincrement())
+  employee_id     Int
+  admin_code_hash String   @db.VarChar(255)
+  employee        employee @relation(fields: [employee_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_employee_admin_access")
+}
+
+model complete_order {
+  id              Int       @id @default(autoincrement())
+  created_by_id   Int
+  order_no        Int
+  client_cpf      String?   @db.Char(14)
+  client_phone    String?   @db.Char(11)
+  client_name     String?   @db.VarChar(100)
+  status          String?   @db.VarChar(40)
+  created_at      DateTime? @db.Date
+  deliver_date    DateTime? @db.Date
+  gross_amount    Decimal?  @db.Decimal(10, 2)
+  discount_amount Decimal?  @db.Decimal(10, 2)
+  net_amount      Decimal?  @db.Decimal(10, 2)
+  employee        employee  @relation(fields: [created_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_employee_complete_order")
+  order           order[]
+}
+
+model employee {
+  id             Int              @id @default(autoincrement())
+  name           String           @db.VarChar(100)
+  email          String?          @db.VarChar(100)
+  phone          String?          @db.Char(11)
+  photo          String?
+  birth_date     DateTime?        @db.Date
+  hire_date      DateTime?        @db.Date
+  role           String?          @db.VarChar(11)
+  gender         String?          @db.Char(1)
+  cpf            String?          @db.Char(14)
+  rg             String?          @db.Char(12)
+  address        String?          @db.VarChar(200)
+  admin_access   admin_access[]
+  complete_order complete_order[]
+}
+
+model order {
+  id                Int             @id @default(autoincrement())
+  complete_order_id Int
+  room_name         String?         @db.VarChar(100)
+  gross_amount      Decimal?        @db.Decimal(10, 2)
+  created_at        DateTime?       @db.Timestamp(6)
+  area_m2           Decimal?        @db.Decimal(10, 2)
+  complete_order    complete_order  @relation(fields: [complete_order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_complete_order_order")
+  order_product     order_product[]
+}
+
+model order_product {
+  id           Int      @id @default(autoincrement())
+  order_id     Int
+  product_id   Int
+  quantity     Int
+  gross_amount Decimal? @db.Decimal(10, 2)
+  order        order    @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_order_product")
+  product      product  @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_product_order_product")
+}
+
+model product {
+  id            Int             @id @default(autoincrement())
+  photo         String?
+  name          String          @db.VarChar(255)
+  unit_price    Decimal         @db.Decimal(10, 2)
+  measure       String?         @db.VarChar(10)
+  type          String?         @db.Char(7)
+  order_product order_product[]
+}
