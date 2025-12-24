@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, HttpCode, HttpStatus } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { Prisma } from '@prisma/client';
 
@@ -20,6 +20,7 @@ export class OrderController {
   }
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   async create(@Body() data: Prisma.orderCreateInput) {
     return this.orderService.create(data);
   }
@@ -33,6 +34,7 @@ export class OrderController {
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param('id', ParseIntPipe) id: number) {
     await this.orderService.delete(id);
   }
