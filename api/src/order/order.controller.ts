@@ -6,9 +6,12 @@ import { Prisma } from '@prisma/client';
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
+  // * BASIC CRUD
   @Get()
-  async findAll(@Query() query : {completeOrderId?: string}) {
-    return this.orderService.findAll(query.completeOrderId ? Number(query.completeOrderId) : undefined);
+  async findAll(@Query() query: { completeOrderId?: string }) {
+    return this.orderService.findAll(
+      query.completeOrderId ? Number(query.completeOrderId) : undefined,
+    );
   }
 
   @Get(':id')
@@ -22,12 +25,22 @@ export class OrderController {
   }
 
   @Patch(':id')
-  async update(@Param('id', ParseIntPipe) id: number, @Body() data: Prisma.orderUpdateInput) {
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: Prisma.orderUpdateInput,
+  ) {
     return this.orderService.update(id, data);
   }
 
   @Delete(':id')
   async delete(@Param('id', ParseIntPipe) id: number) {
     await this.orderService.delete(id);
+  }
+
+  // * FRONTEND-FRIENDLY METHODS
+
+  @Get(':id/details')
+  async findOneWithProductDetails(@Param('id', ParseIntPipe) id: number) {
+    return this.orderService.findOneWithProductDetails(id);
   }
 }

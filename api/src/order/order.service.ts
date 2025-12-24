@@ -11,9 +11,9 @@ export class OrderService {
   // Find all orders
   async findAll(completeOrderId?: number): Promise<Order[]> {
     return this.prisma.order.findMany({
-        where : {
-            complete_order_id : completeOrderId ? completeOrderId : undefined
-        }
+      where: {
+        complete_order_id: completeOrderId ? completeOrderId : undefined,
+      },
     });
   }
 
@@ -41,6 +41,20 @@ export class OrderService {
   async delete(id: number): Promise<Order> {
     await this.findOne(id);
     return this.prisma.order.delete({ where: { id } });
+  }
+
+  // * FRONTEND-FRIENDLY METHODS
+
+  // Find order with product details
+  async findOneWithProductDetails(id: number): Promise<Order> {
+    const order = await this.prisma.order.findUnique({
+      where: { id },
+      include: { order_product: { include: { product: true } } },
+    });
+    if (!order) {
+      throw new NotFoundException(`Order with ID "${id}" not found`);
+    }
+    return order;
   }
 }
 
