@@ -7,10 +7,12 @@ import {
   Post,
   Body,
   Delete,
-  Patch, HttpCode, HttpStatus
+  Patch,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { QueryProductDto } from './dto/query-product.dto';
+import { QueryProductDto } from './dto/product-query.dto';
 import { Prisma, product as Product } from '@prisma/client';
 
 @Controller('product')
@@ -19,18 +21,18 @@ export class ProductController {
 
   // * BASIC CRUD
   @Get()
-  async findAll(@Query() query: QueryProductDto) : Promise<Product[]> {
+  async findAll(@Query() query: QueryProductDto): Promise<Product[]> {
     return this.productService.findAll(query);
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number) : Promise<Product> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Product> {
     return this.productService.findOne(id);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() body: Prisma.productCreateInput) : Promise<Product> {
+  async create(@Body() body: Prisma.productCreateInput): Promise<Product> {
     return this.productService.create(body);
   }
 
@@ -38,19 +40,19 @@ export class ProductController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() body: Prisma.productUpdateInput,
-  ) : Promise<Product> {
+  ): Promise<Product> {
     return this.productService.update(id, body);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async delete(@Param('id', ParseIntPipe) id: number) : Promise<void> {
+  async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
     await this.productService.delete(id);
   }
 
   // * FRONTEND-FRIENDLY METHODS
   @Get('count')
-  async count() : Promise<number> {
+  async count(): Promise<number> {
     return this.productService.count();
   }
 }
