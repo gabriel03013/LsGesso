@@ -17,7 +17,7 @@ export class OrderService {
     });
   }
 
-  // Find one order (not needed)
+  // Find one order
   async findOne(id: number): Promise<Order> {
     const order = await this.prisma.order.findUnique({ where: { id } });
     if (!order) {
@@ -38,9 +38,9 @@ export class OrderService {
   }
 
   // Delete order (complement of complete_order)
-  async delete(id: number): Promise<Order> {
+  async delete(id: number): Promise<void> {
     await this.findOne(id);
-    return this.prisma.order.delete({ where: { id } });
+    await this.prisma.order.delete({ where: { id } });
   }
 
   // * FRONTEND-FRIENDLY METHODS

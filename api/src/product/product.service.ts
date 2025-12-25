@@ -56,14 +56,14 @@ export class ProductService {
 
   // Update product
   async update(id: number, data: Prisma.productUpdateInput): Promise<Product> {
-    const product = await this.findOne(id);
+    await this.findOne(id);
     return this.prisma.product.update({ where: { id }, data });
   }
 
   // Delete product
-  async delete(id: number): Promise<Product> {
-    const product = await this.findOne(id);
-    return this.prisma.product.delete({ where: { id } });
+  async delete(id: number): Promise<void> {
+    await this.findOne(id);
+    await this.prisma.product.delete({ where: { id } });
   }
 
   // * FRONTEND-FRIENDLY METHODS

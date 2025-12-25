@@ -7,7 +7,7 @@ export class OrderProductService {
   constructor(private readonly prisma: PrismaService) {}
 
   // * BASIC CRUD
-  
+
   // Find all order products
   async findAll(orderId?: number): Promise<OrderProduct[]> {
     return this.prisma.order_product.findMany({

@@ -1,4 +1,16 @@
-import { Controller, Get, Post, Patch, Delete, Param, Body, Query, ParseIntPipe, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Param,
+  Body,
+  Query,
+  ParseIntPipe,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { OrderService } from './order.service';
 import { Prisma } from '@prisma/client';
 
@@ -8,10 +20,10 @@ export class OrderController {
 
   // * BASIC CRUD
   @Get()
-  async findAll(@Query() query: { completeOrderId?: string }) {
-    return this.orderService.findAll(
-      query.completeOrderId ? Number(query.completeOrderId) : undefined,
-    );
+  async findAll(
+    @Query('completeOrderId', ParseIntPipe) completeOrderId?: number,
+  ) {
+    return this.orderService.findAll(completeOrderId ?? undefined);
   }
 
   @Get(':id')
