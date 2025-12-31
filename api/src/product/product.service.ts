@@ -56,14 +56,26 @@ export class ProductService {
 
   // Update product
   async update(id: number, data: Prisma.productUpdateInput): Promise<Product> {
-    await this.findOne(id);
-    return this.prisma.product.update({ where: { id }, data });
+    try {
+      return await this.prisma.product.update({ where: { id }, data });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException('Product not found');
+      }
+      throw error;
+    }
   }
 
   // Delete product
   async delete(id: number): Promise<void> {
-    await this.findOne(id);
-    await this.prisma.product.delete({ where: { id } });
+    try {
+      await this.prisma.product.delete({ where: { id } });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException('Product not found');
+      }
+      throw error;
+    }
   }
 
   // * FRONTEND-FRIENDLY METHODS

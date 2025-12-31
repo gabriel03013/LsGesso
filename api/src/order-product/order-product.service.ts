@@ -36,17 +36,29 @@ export class OrderProductService {
     id: number,
     data: Prisma.order_productUpdateInput,
   ): Promise<OrderProduct> {
-    await this.findOne(id);
-    return this.prisma.order_product.update({
-      where: { id },
-      include: { product: true },
-      data,
-    });
+    try {
+      return await this.prisma.order_product.update({
+        where: { id },
+        include: { product: true },
+        data,
+      });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException('OrderProduct not found');
+      }
+      throw error;
+    }
   }
 
   // Delete order product
   async delete(id: number): Promise<void> {
-    await this.findOne(id);
-    await this.prisma.order_product.delete({ where: { id } });
+    try {
+      await this.prisma.order_product.delete({ where: { id } });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException('OrderProduct not found');
+      }
+      throw error;
+    }
   }
 }

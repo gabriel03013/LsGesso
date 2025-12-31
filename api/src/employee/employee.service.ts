@@ -31,14 +31,26 @@ export class EmployeeService {
     id: number,
     data: Prisma.employeeUpdateInput,
   ): Promise<Employee> {
-    await this.findOne(id);
-    return this.prisma.employee.update({ where: { id }, data });
+    try {
+      return await this.prisma.employee.update({ where: { id }, data });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`Employee with id ${id} not found`);
+      }
+      throw error;
+    }
   }
 
   // Delete
   async delete(id: number): Promise<void> {
-    await this.findOne(id);
-    await this.prisma.employee.delete({ where: { id } });
+    try {
+      await this.prisma.employee.delete({ where: { id } });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`Employee with id ${id} not found`);
+      }
+      throw error;
+    }
   }
 
   // * FRONTEND-FRIENDLY METHODS

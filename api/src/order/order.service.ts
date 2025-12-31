@@ -33,14 +33,26 @@ export class OrderService {
 
   // Update order (complement of complete_order)
   async update(id: number, data: Prisma.orderUpdateInput): Promise<Order> {
-    await this.findOne(id);
-    return this.prisma.order.update({ where: { id }, data });
+    try {
+      return await this.prisma.order.update({ where: { id }, data });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`Order with ID "${id}" not found`);
+      }
+      throw error;
+    }
   }
 
   // Delete order (complement of complete_order)
   async delete(id: number): Promise<void> {
-    await this.findOne(id);
-    await this.prisma.order.delete({ where: { id } });
+    try {
+      await this.prisma.order.delete({ where: { id } });
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`Order with ID "${id}" not found`);
+      }
+      throw error;
+    }
   }
 
   // * FRONTEND-FRIENDLY METHODS
