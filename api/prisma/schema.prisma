@@ -10,14 +10,14 @@ datasource db {
 model admin_access {
   id              Int      @id @default(autoincrement())
   employee_id     Int
-  admin_code_hash String   @db.VarChar(255)
+  admin_code_hash String   @unique(map: "admin_code_hash_unique") @db.VarChar(255)
   employee        employee @relation(fields: [employee_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_employee_admin_access")
 }
 
 model complete_order {
   id              Int       @id @default(autoincrement())
   created_by_id   Int
-  order_no        Int
+  order_no        Int       @unique(map: "complete_order_order_no_unique") @default(autoincrement())
   client_cpf      String?   @db.Char(14)
   client_phone    String?   @db.Char(11)
   client_name     String?   @db.VarChar(100)
@@ -34,7 +34,7 @@ model complete_order {
 model employee {
   id             Int              @id @default(autoincrement())
   name           String           @db.VarChar(100)
-  email          String?          @db.VarChar(100)
+  email          String?          @unique(map: "employee_email_unique") @db.VarChar(100)
   phone          String?          @db.Char(11)
   photo          String?
   birth_date     DateTime?        @db.Date
