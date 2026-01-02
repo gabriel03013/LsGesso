@@ -1,9 +1,11 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { CompleteOrderStatus } from 'src/complete-order/enums/complete-order-status.enum';
 import { DashboardOrdersService } from './dashboard-orders.service';
 import { DashboardService } from './dashboard.service';
 import { DashboardFinancialService } from './dashboard-financial.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('dashboard')
 export class DashboardController {
   // * HELPER

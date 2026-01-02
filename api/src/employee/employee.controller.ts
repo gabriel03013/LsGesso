@@ -1,7 +1,9 @@
-import { Controller, Body, Param, Query, Get, Post, Patch, Delete, HttpCode, HttpStatus, ParseIntPipe } from '@nestjs/common';
+import { Controller, Body, Param, Query, Get, Post, Patch, Delete, HttpCode, HttpStatus, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 import { Prisma, employee as Employee } from '@prisma/client';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('employee')
 export class EmployeeController {
   constructor(private readonly employeeService: EmployeeService) {}

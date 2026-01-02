@@ -12,11 +12,14 @@ import {
   Patch,
   BadRequestException,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 import { OrderProductService } from './order-product.service';
 import { PrismaService } from 'src/prisma.service';
 import { Prisma } from '@prisma/client';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('order-product')
 export class OrderProductController {
   constructor(

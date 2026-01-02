@@ -10,12 +10,15 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { CompleteOrderService } from './complete-order.service';
 import { Prisma, complete_order as CompleteOrder } from '@prisma/client';
 import { CompleteOrderStatus } from './enums/complete-order-status.enum';
 import { QueryCompleteOrderDto } from './dto/query-complete-order.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('complete-order')
 export class CompleteOrderController {
   constructor(private readonly completeOrderService: CompleteOrderService) {}
