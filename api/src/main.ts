@@ -1,12 +1,19 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 async function bootstrap() {
+  console.log('🚀 Starting app...');
+
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalGuards(new JwtAuthGuard());
+  console.log('✅ Nest created');
+
   app.enableCors();
-  await app.listen(process.env.PORT ?? 3000);
+
+  const port = process.env.PORT ?? 3000;
+  await app.listen(port, '0.0.0.0');
+
+  console.log(`🔥 Listening on port ${port}`);
 }
+
 bootstrap();
