@@ -34,7 +34,7 @@ model complete_order {
 model employee {
   id             Int              @id @default(autoincrement())
   name           String           @db.VarChar(100)
-  email          String?          @unique(map: "employee_email_unique") @db.VarChar(100)
+  email          String           @unique(map: "employee_email_unique") @db.VarChar(100)
   phone          String?          @db.Char(11)
   photo          String?
   birth_date     DateTime?        @db.Date
