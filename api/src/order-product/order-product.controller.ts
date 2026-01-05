@@ -28,46 +28,57 @@ export class OrderProductController {
   ) {}
 
   // * BASIC CRUD
+
   @Get()
   async findAll(@Query('order_id', ParseIntPipe) orderId?: number) {
     return this.orderProductService.findAll(orderId ?? undefined);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number) {
+  async findOne(@Param('id', ParseIntPipe) id: number) {
     return this.orderProductService.findOne(id);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() data: Prisma.order_productCreateInput) {
-    if (!data.product.connect?.id) {
-      throw new BadRequestException('Product ID is required');
+  async create(@Body() body: any) {
+    if (!body.order_id || !body.product_id || body.quantity == null) {
+      throw new BadRequestException(
+        'order_id, product_id and quantity are required',
+      );
     }
 
     const product = await this.prismaService.product.findUnique({
-      where: { id: data.product.connect.id },
+      where: { id: body.product_id },
     });
 
     if (!product) {
       throw new NotFoundException('Product not found');
     }
 
-    data.gross_amount = Number(product.unit_price) * Number(data.quantity);
+    const data: Prisma.order_productCreateInput = {
+      quantity: Number(body.quantity),
+      gross_amount: Number(product.unit_price) * Number(body.quantity),
+
+      order: {
+        connect: { id: body.order_id },
+      },
+
+      product: {
+        connect: { id: body.product_id },
+      },
+    };
 
     return this.orderProductService.create(data);
   }
 
   @Patch(':id')
-  async update(
-    @Param('id') id: number,
-    @Body() data: Prisma.order_productUpdateInput,
-  ) {
+  async update(@Param('id', ParseIntPipe) id: number, @Body() body: any) {
     const existing = await this.orderProductService.findOne(id);
 
-    const productId = data.product?.connect?.id || existing.product_id;
+    const productId = body.product_id ?? existing.product_id;
     const quantity =
-      data.quantity !== undefined ? Number(data.quantity) : existing.quantity;
+      body.quantity !== undefined ? Number(body.quantity) : existing.quantity;
 
     const product = await this.prismaService.product.findUnique({
       where: { id: productId },
@@ -77,14 +88,25 @@ export class OrderProductController {
       throw new NotFoundException('Product not found');
     }
 
-    data.gross_amount = Number(product.unit_price) * Number(quantity);
+    const data: Prisma.order_productUpdateInput = {
+      quantity,
+      gross_amount: Number(product.unit_price) * Number(quantity),
+
+      ...(body.product_id && {
+        product: { connect: { id: body.product_id } },
+      }),
+
+      ...(body.order_id && {
+        order: { connect: { id: body.order_id } },
+      }),
+    };
 
     return this.orderProductService.update(id, data);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async delete(@Param('id') id: number) {
+  async delete(@Param('id', ParseIntPipe) id: number) {
     await this.orderProductService.delete(id);
   }
 }
