@@ -14,9 +14,10 @@ export class AuthService {
     private readonly prisma: PrismaService,
   ) {}
 
-  // * LOGIN
   async login(email: string, adminCode: string) {
-    const user = await this.prisma.employee.findUnique({ where: { email } });
+    const user = await this.prisma.employee.findUnique({
+      where: { email },
+    });
 
     if (!user) {
       throw new NotFoundException('User not found');
@@ -26,7 +27,8 @@ export class AuthService {
       where: { employee_id: user.id },
     });
 
-    if (!adminAccess) {
+
+    if (!adminAccess?.admin_code_hash) {
       throw new UnauthorizedException('Admin access not found');
     }
 
@@ -39,23 +41,18 @@ export class AuthService {
       throw new UnauthorizedException('Invalid admin code');
     }
 
+    const access_token = this.jwtService.sign({
+      sub: user.id,
+      email: user.email,
+    });
+
     return {
-      access_token: this.jwtService.sign({
-        sub: user.id,
-        email: user.email,
-      }),
+      access_token,
       user: {
         id: user.id,
         email: user.email,
         name: user.name,
       },
-    };
-  }
-
-  // * JWT
-  async sign(payload: { sub: number; email: string }) {
-    return {
-      access_token: this.jwtService.sign(payload),
     };
   }
 }
