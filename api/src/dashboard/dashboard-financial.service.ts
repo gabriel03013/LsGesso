@@ -107,6 +107,42 @@ export class DashboardFinancialService {
     return totalNet / totalOrders;
   }
 
+  // Comparison: orders with discount vs without — count, avg ticket, total revenue per group
+  async getDiscountImpact(startDate?: Date, endDate?: Date) {
+    return this.prisma.$queryRaw<
+      { group: string; orders_count: number; avg_ticket: number; total_revenue: number }[]
+    >`
+      SELECT
+        CASE WHEN discount_amount > 0 THEN 'with_discount' ELSE 'without_discount' END as "group",
+        COUNT(*)::int as orders_count,
+        ROUND(AVG(net_amount)::numeric, 2)::float as avg_ticket,
+        COALESCE(SUM(net_amount), 0)::float as total_revenue
+      FROM complete_order
+      WHERE (${startDate}::date IS NULL OR created_at >= ${startDate})
+        AND (${endDate}::date IS NULL OR created_at <= ${endDate})
+      GROUP BY "group"
+      ORDER BY "group" ASC
+    `;
+  }
+
+  // Monthly gross revenue vs net revenue vs total discount
+  async getMonthlyGrossVsNet(startDate?: Date, endDate?: Date) {
+    return this.prisma.$queryRaw<
+      { month: string; gross_revenue: number; net_revenue: number; total_discount: number }[]
+    >`
+      SELECT
+        TO_CHAR(DATE_TRUNC('month', created_at), 'YYYY-MM') as month,
+        COALESCE(SUM(gross_amount), 0)::float as gross_revenue,
+        COALESCE(SUM(net_amount), 0)::float as net_revenue,
+        COALESCE(SUM(discount_amount), 0)::float as total_discount
+      FROM complete_order
+      WHERE (${startDate}::date IS NULL OR created_at >= ${startDate})
+        AND (${endDate}::date IS NULL OR created_at <= ${endDate})
+      GROUP BY DATE_TRUNC('month', created_at)
+      ORDER BY DATE_TRUNC('month', created_at) ASC
+    `;
+  }
+
   // * FINANCIAL OVERVIEW
 
   async getFinancialOverview(startDate?: Date, endDate?: Date) {
