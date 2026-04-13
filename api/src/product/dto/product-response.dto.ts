@@ -13,7 +13,7 @@ export class ProductResponseDto {
   @ApiProperty({ example: 25.5 })
   unit_price: number;
 
-  @ApiPropertyOptional({ example: 'm²' })
+  @ApiPropertyOptional({ example: 'm2' })
   measure: string | null;
 
   @ApiPropertyOptional({ example: 'Produto', enum: ['Produto', 'Serviço'] })
@@ -30,7 +30,7 @@ export class CreateProductDto {
   @ApiProperty({ example: 25.5 })
   unit_price: number;
 
-  @ApiPropertyOptional({ example: 'm²' })
+  @ApiPropertyOptional({ example: 'm2' })
   measure?: string;
 
   @ApiPropertyOptional({ example: 'Produto', enum: ['Produto', 'Serviço'] })
@@ -47,7 +47,7 @@ export class UpdateProductDto {
   @ApiPropertyOptional({ example: 30.0 })
   unit_price?: number;
 
-  @ApiPropertyOptional({ example: 'm²' })
+  @ApiPropertyOptional({ example: 'm2' })
   measure?: string;
 
   @ApiPropertyOptional({ example: 'Produto', enum: ['Produto', 'Serviço'] })
