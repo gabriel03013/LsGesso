@@ -1,16 +1,26 @@
-import { AppSidebar } from "@/components/app-sidebar"
-import { ChartAreaInteractive } from "@/components/chart-area-interactive"
-import { DataTable } from "@/components/data-table"
-import { SectionCards } from "@/components/section-cards"
-import { SiteHeader } from "@/components/site-header"
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/sidebar"
+"use client";
 
-import data from "./data.json"
+import { AppSidebar } from "@/components/app-sidebar";
+import { ChartAreaInteractive } from "@/components/chart-area-interactive";
+import { DataTable } from "@/components/data-table";
+import { SectionCards } from "@/components/section-cards";
+import { SiteHeader } from "@/components/site-header";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import data from "./data.json";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/services/api";
 
 export default function Page() {
+  const { data: data2 } = useQuery({
+    queryKey: ["dashboard-data"],
+    queryFn: async () => {
+      const data = await api<any>("/dashboard/overview");
+      return data;
+    },
+  });
+
+  console.log(data2);
+
   return (
     <SidebarProvider
       style={
@@ -36,5 +46,5 @@ export default function Page() {
         </div>
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }
