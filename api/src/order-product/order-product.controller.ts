@@ -14,11 +14,15 @@ import {
   NotFoundException,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiCookieAuth, ApiParam, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { OrderProductService } from './order-product.service';
 import { PrismaService } from 'src/prisma.service';
 import { Prisma } from '@prisma/client';
+import { OrderProductResponseDto, CreateOrderProductDto, UpdateOrderProductDto } from './dto/order-product-response.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
+@ApiTags('Produtos do Cômodo')
+@ApiCookieAuth('access_token')
 @UseGuards(JwtAuthGuard)
 @Controller('order-product')
 export class OrderProductController {
@@ -27,20 +31,30 @@ export class OrderProductController {
     private readonly prismaService: PrismaService,
   ) {}
 
-  // * BASIC CRUD
-
   @Get()
+  @ApiOperation({ summary: 'Listar produtos de um cômodo' })
+  @ApiQuery({ name: 'order_id', type: Number, required: false, description: 'Filtrar por cômodo (order)' })
+  @ApiResponse({ status: 200, description: 'Lista de produtos do cômodo', type: [OrderProductResponseDto] })
   async findAll(@Query('order_id', ParseIntPipe) orderId?: number) {
     return this.orderProductService.findAll(orderId ?? undefined);
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Buscar produto do cômodo por ID' })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiResponse({ status: 200, description: 'Produto do cômodo encontrado', type: OrderProductResponseDto })
+  @ApiResponse({ status: 404, description: 'Não encontrado' })
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return this.orderProductService.findOne(id);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Adicionar produto a um cômodo (calcula gross_amount automaticamente)' })
+  @ApiBody({ type: CreateOrderProductDto })
+  @ApiResponse({ status: 201, description: 'Produto adicionado ao cômodo', type: OrderProductResponseDto })
+  @ApiResponse({ status: 400, description: 'Campos obrigatórios faltando' })
+  @ApiResponse({ status: 404, description: 'Produto não encontrado' })
   async create(@Body() body: any) {
     if (!body.order_id || !body.product_id || body.quantity == null) {
       throw new BadRequestException(
@@ -73,6 +87,11 @@ export class OrderProductController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Atualizar produto do cômodo (recalcula gross_amount)' })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiBody({ type: UpdateOrderProductDto })
+  @ApiResponse({ status: 200, description: 'Produto atualizado', type: OrderProductResponseDto })
+  @ApiResponse({ status: 404, description: 'Não encontrado' })
   async update(@Param('id', ParseIntPipe) id: number, @Body() body: any) {
     const existing = await this.orderProductService.findOne(id);
 
@@ -106,6 +125,10 @@ export class OrderProductController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Remover produto do cômodo' })
+  @ApiParam({ name: 'id', type: Number })
+  @ApiResponse({ status: 204, description: 'Produto removido' })
+  @ApiResponse({ status: 404, description: 'Não encontrado' })
   async delete(@Param('id', ParseIntPipe) id: number) {
     await this.orderProductService.delete(id);
   }
