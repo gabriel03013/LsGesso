@@ -148,7 +148,19 @@ export class CompleteOrderService {
   }
 
   // Find for select (listing of complete orders)
-  async findForSelect() {
+  async findForSelect(query?: QueryCompleteOrderDto) {
+    const { skip, take, search, orderBy, order, status } = query || {};
+
+    const where: Prisma.complete_orderWhereInput = {
+      ...(status && { status }),
+      ...(search && {
+        OR: [
+          { client_name: { contains: search, mode: 'insensitive' as const } },
+          ...(!isNaN(Number(search)) ? [{ order_no: Number(search) }] : []),
+        ],
+      }),
+    };
+
     return this.prisma.complete_order.findMany({
       select: {
         id: true,
@@ -156,8 +168,10 @@ export class CompleteOrderService {
         client_name: true,
         status: true,
       },
-      orderBy: { created_at: 'desc' },
-      take: 50,
+      where,
+      orderBy: { [orderBy ?? 'created_at']: order ?? 'desc' },
+      skip: skip ?? 0,
+      take: Math.min(take ?? 50, 100),
     });
   }
 

@@ -49,10 +49,10 @@ export class CompleteOrderController {
   }
 
   @Get('listing')
-  @ApiOperation({ summary: 'Lista simplificada para selects (id, order_no, client_name, status)' })
+  @ApiOperation({ summary: 'Lista simplificada para selects (id, order_no, client_name, status) com filtros' })
   @ApiResponse({ status: 200, description: 'Lista simplificada', type: [CompleteOrderListingDto] })
-  async findForSelect() {
-    return this.completeOrderService.findForSelect();
+  async findForSelect(@Query() query?: QueryCompleteOrderDto) {
+    return this.completeOrderService.findForSelect(query);
   }
 
   @Get('by-order-no/:order_no')
