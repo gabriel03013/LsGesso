@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { complete_order as CompleteOrder, Prisma } from '@prisma/client';
 import { CompleteOrderStatus } from 'src/complete-order/enums/complete-order-status.enum';
 import { PrismaService } from 'src/prisma.service';
+import { IDashboardOrdersResponse } from './interfaces/dashboard-orders-response.interface';
 
 @Injectable()
 export class DashboardOrdersService {
@@ -84,7 +85,14 @@ export class DashboardOrdersService {
     limit: number = 10,
   ) {
     return this.prisma.$queryRaw<
-      { employee_id: number; name: string; role: string; orders_count: number; total_revenue: number }[]>`
+      {
+        employee_id: number;
+        name: string;
+        role: string;
+        orders_count: number;
+        total_revenue: number;
+      }[]
+    >`
       SELECT
         e.id as employee_id,
         e.name,
@@ -103,7 +111,7 @@ export class DashboardOrdersService {
 
   // Distribution of how many rooms (orders) each complete_order has (1, 2, 3+)
   async getAverageRoomsPerOrder(startDate?: Date, endDate?: Date) {
-  return this.prisma.$queryRaw<{ rooms: number; total: number }[]>`
+    return this.prisma.$queryRaw<{ rooms: number; total: number }[]>`
     SELECT rooms, COUNT(*)::int as total
     FROM (
       SELECT co.id, COUNT(o.id)::int as rooms
@@ -116,8 +124,7 @@ export class DashboardOrdersService {
     GROUP BY rooms
     ORDER BY rooms ASC
   `;
-}
-
+  }
 
   // Monthly trend: order count + net revenue per month
   async getOrdersMonthlyTrend(startDate?: Date, endDate?: Date) {
@@ -141,24 +148,90 @@ export class DashboardOrdersService {
     const [total, paid, inProgress, completed, canceled, budget, maintenance] =
       await Promise.all([
         this.getTotalOrders(startDate, endDate),
-        this.getTotalOrdersByStatus(CompleteOrderStatus.PAGO, startDate, endDate),
-        this.getTotalOrdersByStatus(CompleteOrderStatus.ANDAMENTO, startDate, endDate),
-        this.getTotalOrdersByStatus(CompleteOrderStatus.CONCLUIDO, startDate, endDate),
-        this.getTotalOrdersByStatus(CompleteOrderStatus.CANCELADO, startDate, endDate),
-        this.getTotalOrdersByStatus(CompleteOrderStatus.ORCAMENTO, startDate, endDate),
-        this.getTotalOrdersByStatus(CompleteOrderStatus.MANUTENCAO, startDate, endDate),
+        this.getTotalOrdersByStatus(
+          CompleteOrderStatus.PAGO,
+          startDate,
+          endDate,
+        ),
+        this.getTotalOrdersByStatus(
+          CompleteOrderStatus.ANDAMENTO,
+          startDate,
+          endDate,
+        ),
+        this.getTotalOrdersByStatus(
+          CompleteOrderStatus.CONCLUIDO,
+          startDate,
+          endDate,
+        ),
+        this.getTotalOrdersByStatus(
+          CompleteOrderStatus.CANCELADO,
+          startDate,
+          endDate,
+        ),
+        this.getTotalOrdersByStatus(
+          CompleteOrderStatus.ORCAMENTO,
+          startDate,
+          endDate,
+        ),
+        this.getTotalOrdersByStatus(
+          CompleteOrderStatus.MANUTENCAO,
+          startDate,
+          endDate,
+        ),
       ]);
 
-    return {
-      total,
-      byStatus: {
-        paid,
-        inProgress,
-        completed,
-        canceled,
-        budget,
-        maintenance,
+    const response: IDashboardOrdersResponse = {
+      total: {
+        title: 'Total de Pedidos',
+        description: 'Número total de pedidos no período selecionado',
+        data: total.toString(),
+        type: 'number',
+        icon: 'shopping-cart',
+      },
+      paid: {
+        title: 'Pedidos Pagos',
+        description: 'Número de pedidos pagos no período selecionado',
+        data: paid.toString(),
+        type: 'number',
+        icon: 'check',
+      },
+      pending: {
+        title: 'Pedidos em Andamento',
+        description: 'Número de pedidos em andamento no período selecionado',
+        data: inProgress.toString(),
+        type: 'number',
+        icon: 'hourglass-split',
+      },
+      cancelled: {
+        title: 'Pedidos Cancelados',
+        description: 'Número de pedidos cancelados no período selecionado',
+        data: canceled.toString(),
+        type: 'number',
+        icon: 'x',
+      },
+      budget: {
+        title: 'Orçamentos',
+        description: 'Número de orçamentos no período selecionado',
+        data: budget.toString(),
+        type: 'number',
+        icon: 'file-invoice',
+      },
+      maintenance: {
+        title: 'Pedidos em Manutenção',
+        description: 'Número de pedidos em manutenção no período selecionado',
+        data: maintenance.toString(),
+        type: 'number',
+        icon: 'tools',
+      },
+      completed: {
+        title: 'Pedidos Concluídos',
+        description: 'Número de pedidos concluídos no período selecionado',
+        data: completed.toString(),
+        type: 'number',
+        icon: 'check-double',
       },
     };
+
+    return response;
   }
 }
