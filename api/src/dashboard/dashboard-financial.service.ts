@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { complete_order as CompleteOrder, Prisma } from '@prisma/client';
 import { CompleteOrderStatus } from 'src/complete-order/enums/complete-order-status.enum';
 import { PrismaService } from 'src/prisma.service';
+import { IDashboardFinancialResponse } from './interfaces/dashboard-financial-response.interface';
 
 @Injectable()
 export class DashboardFinancialService {
@@ -110,7 +111,12 @@ export class DashboardFinancialService {
   // Comparison: orders with discount vs without — count, avg ticket, total revenue per group
   async getDiscountImpact(startDate?: Date, endDate?: Date) {
     return this.prisma.$queryRaw<
-      { group: string; orders_count: number; avg_ticket: number; total_revenue: number }[]
+      {
+        group: string;
+        orders_count: number;
+        avg_ticket: number;
+        total_revenue: number;
+      }[]
     >`
       SELECT
         CASE WHEN discount_amount > 0 THEN 'with_discount' ELSE 'without_discount' END as "group",
@@ -128,7 +134,12 @@ export class DashboardFinancialService {
   // Monthly gross revenue vs net revenue vs total discount
   async getMonthlyGrossVsNet(startDate?: Date, endDate?: Date) {
     return this.prisma.$queryRaw<
-      { month: string; gross_revenue: number; net_revenue: number; total_discount: number }[]
+      {
+        month: string;
+        gross_revenue: number;
+        net_revenue: number;
+        total_discount: number;
+      }[]
     >`
       SELECT
         TO_CHAR(DATE_TRUNC('month', created_at), 'YYYY-MM') as month,
@@ -178,11 +189,41 @@ export class DashboardFinancialService {
         }),
       ]);
 
-    return {
-      totalNetRevenue: totalNet._sum.net_amount?.toNumber() ?? 0,
-      totalGrossRevenue: totalGross._sum.gross_amount?.toNumber() ?? 0,
-      totalDiscount: totalDiscount._sum.discount_amount?.toNumber() ?? 0,
-      paidNetRevenue: paidNet._sum.net_amount?.toNumber() ?? 0,
+    const response: IDashboardFinancialResponse = {
+      totalNetRevenue: {
+        title: 'Receita Líquida Total',
+        description:
+          'Soma da receita líquida de todos os pedidos no período selecionado',
+        data: (totalNet._sum.net_amount ?? 0).toString(),
+        type: 'money',
+        icon: 'dollar-sign',
+      },
+      totalGrossRevenue: {
+        title: 'Receita Bruta Total',
+        description:
+          'Soma da receita bruta de todos os pedidos no período selecionado',
+        data: (totalGross._sum.gross_amount ?? 0).toString(),
+        type: 'money',
+        icon: 'dollar-sign',
+      },
+      totalDiscount: {
+        title: 'Desconto Total',
+        description:
+          'Soma dos descontos aplicados em todos os pedidos no período selecionado',
+        data: (totalDiscount._sum.discount_amount ?? 0).toString(),
+        type: 'money',
+        icon: 'tag',
+      },
+      paidNetRevenue: {
+        title: 'Receita Líquida de Pedidos Pagos',
+        description:
+          'Soma da receita líquida de pedidos com status Pago no período selecionado',
+        data: (paidNet._sum.net_amount ?? 0).toString(),
+        type: 'money',
+        icon: 'dollar-sign',
+      },
     };
+
+    return response;
   }
 }
