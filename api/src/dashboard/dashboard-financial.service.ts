@@ -3,6 +3,8 @@ import { complete_order as CompleteOrder, Prisma } from '@prisma/client';
 import { CompleteOrderStatus } from 'src/complete-order/enums/complete-order-status.enum';
 import { PrismaService } from 'src/prisma.service';
 import { IDashboardFinancialResponse } from './interfaces/dashboard-financial-response.interface';
+import { KpiCategory } from './enums/kpi-category.enum';
+import { KpiIcon } from './enums/kpi-icon.enum';
 
 @Injectable()
 export class DashboardFinancialService {
@@ -196,7 +198,8 @@ export class DashboardFinancialService {
           'Soma da receita líquida de todos os pedidos no período selecionado',
         data: (totalNet._sum.net_amount ?? 0).toString(),
         type: 'money',
-        icon: 'dollar-sign',
+        icon: KpiIcon.DOLLAR_SIGN,
+        category: KpiCategory.FINANCIAL,
       },
       totalGrossRevenue: {
         title: 'Receita Bruta Total',
@@ -204,7 +207,8 @@ export class DashboardFinancialService {
           'Soma da receita bruta de todos os pedidos no período selecionado',
         data: (totalGross._sum.gross_amount ?? 0).toString(),
         type: 'money',
-        icon: 'dollar-sign',
+        icon: KpiIcon.RECEIPT,
+        category: KpiCategory.FINANCIAL,
       },
       totalDiscount: {
         title: 'Desconto Total',
@@ -212,7 +216,8 @@ export class DashboardFinancialService {
           'Soma dos descontos aplicados em todos os pedidos no período selecionado',
         data: (totalDiscount._sum.discount_amount ?? 0).toString(),
         type: 'money',
-        icon: 'tag',
+        icon: KpiIcon.TAG,
+        category: KpiCategory.FINANCIAL,
       },
       paidNetRevenue: {
         title: 'Receita Líquida de Pedidos Pagos',
@@ -220,7 +225,8 @@ export class DashboardFinancialService {
           'Soma da receita líquida de pedidos com status Pago no período selecionado',
         data: (paidNet._sum.net_amount ?? 0).toString(),
         type: 'money',
-        icon: 'dollar-sign',
+        icon: KpiIcon.TRENDING_UP,
+        category: KpiCategory.FINANCIAL,
       },
     };
 

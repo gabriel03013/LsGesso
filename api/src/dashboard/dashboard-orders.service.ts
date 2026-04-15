@@ -3,6 +3,8 @@ import { complete_order as CompleteOrder, Prisma } from '@prisma/client';
 import { CompleteOrderStatus } from 'src/complete-order/enums/complete-order-status.enum';
 import { PrismaService } from 'src/prisma.service';
 import { IDashboardOrdersResponse } from './interfaces/dashboard-orders-response.interface';
+import { KpiCategory } from './enums/kpi-category.enum';
+import { KpiIcon } from './enums/kpi-icon.enum';
 
 @Injectable()
 export class DashboardOrdersService {
@@ -186,49 +188,56 @@ export class DashboardOrdersService {
         description: 'Número total de pedidos no período selecionado',
         data: total.toString(),
         type: 'number',
-        icon: 'shopping-cart',
+        icon: KpiIcon.CLIPBOARD_LIST,
+        category: KpiCategory.ORDER,
       },
       paid: {
         title: 'Pedidos Pagos',
         description: 'Número de pedidos pagos no período selecionado',
         data: paid.toString(),
         type: 'number',
-        icon: 'check',
+        icon: KpiIcon.CHECK_CIRCLE,
+        category: KpiCategory.ORDER,
       },
       pending: {
         title: 'Pedidos em Andamento',
         description: 'Número de pedidos em andamento no período selecionado',
         data: inProgress.toString(),
         type: 'number',
-        icon: 'hourglass-split',
+        icon: KpiIcon.CLOCK,
+        category: KpiCategory.ORDER,
       },
       cancelled: {
         title: 'Pedidos Cancelados',
         description: 'Número de pedidos cancelados no período selecionado',
         data: canceled.toString(),
         type: 'number',
-        icon: 'x',
+        icon: KpiIcon.X_CIRCLE,
+        category: KpiCategory.ORDER,
       },
       budget: {
         title: 'Orçamentos',
         description: 'Número de orçamentos no período selecionado',
         data: budget.toString(),
         type: 'number',
-        icon: 'file-invoice',
+        icon: KpiIcon.FILE_TEXT,
+        category: KpiCategory.ORDER,
       },
       maintenance: {
         title: 'Pedidos em Manutenção',
         description: 'Número de pedidos em manutenção no período selecionado',
         data: maintenance.toString(),
         type: 'number',
-        icon: 'tools',
+        icon: KpiIcon.WRENCH,
+        category: KpiCategory.ORDER,
       },
       completed: {
         title: 'Pedidos Concluídos',
         description: 'Número de pedidos concluídos no período selecionado',
         data: completed.toString(),
         type: 'number',
-        icon: 'check-double',
+        icon: KpiIcon.CHECK_SQUARE,
+        category: KpiCategory.ORDER,
       },
     };
 

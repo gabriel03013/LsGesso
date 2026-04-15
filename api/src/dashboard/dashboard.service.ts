@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DashboardOrdersService } from './dashboard-orders.service';
 import { DashboardFinancialService } from './dashboard-financial.service';
 import { DashboardProductsService } from './dashboard-products.service';
+import { IResponseDashboardKPIs } from './interfaces/dashboard-kpi-response.interface';
 
 @Injectable()
 export class DashboardService {
@@ -11,22 +12,17 @@ export class DashboardService {
     private readonly products: DashboardProductsService,
   ) {}
 
-  // KPI cards — single request
-  async getOverview(startDate?: Date, endDate?: Date) {
-    const [orders, financial, discountImpact, avgRoomsPerOrder] =
-      await Promise.all([
-        this.orders.getOrdersOverview(startDate, endDate),
-        this.financial.getFinancialOverview(startDate, endDate),
-        this.financial.getDiscountImpact(startDate, endDate),
-        this.orders.getAverageRoomsPerOrder(startDate, endDate),
-      ]);
+  // KPI cards — flat array, frontend just does data.map(kpi => <Card {...kpi} />)
+  async getOverview(startDate?: Date, endDate?: Date): Promise<IResponseDashboardKPIs[]> {
+    const [ordersKpis, financialKpis] = await Promise.all([
+      this.orders.getOrdersOverview(startDate, endDate),
+      this.financial.getFinancialOverview(startDate, endDate),
+    ]);
 
-    return {
-      orders,
-      financial,
-      discountImpact,
-      avgRoomsPerOrder,
-    };
+    return [
+      ...Object.values(financialKpis),
+      ...Object.values(ordersKpis),
+    ];
   }
 
   // All charts for the "Orders" tab

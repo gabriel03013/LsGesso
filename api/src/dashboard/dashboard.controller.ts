@@ -6,8 +6,7 @@ import { DashboardService } from './dashboard.service';
 import { DashboardFinancialService } from './dashboard-financial.service';
 import { DashboardProductsService } from './dashboard-products.service';
 import {
-  DashboardOverviewDto,
-  OrdersOverviewDto,
+  KpiCardDto,
   FinancialOverviewDto,
   OrdersByStatusItemDto,
   OrdersPerDayItemDto,
@@ -64,7 +63,7 @@ export class DashboardController {
   @ApiOperation({ summary: 'KPIs do dashboard (pedidos + financeiro + descontos + cômodos)' })
   @ApiQuery({ name: 'startDate', required: false, type: String, description: 'Data início (YYYY-MM-DD)' })
   @ApiQuery({ name: 'endDate', required: false, type: String, description: 'Data fim (YYYY-MM-DD)' })
-  @ApiResponse({ status: 200, description: 'Overview completo para KPIs', type: DashboardOverviewDto })
+  @ApiResponse({ status: 200, description: 'KPI cards flat array', type: [KpiCardDto] })
   async getOverview(
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
@@ -128,7 +127,7 @@ export class DashboardController {
   @ApiOperation({ summary: 'Resumo de pedidos (total, pagos, pendentes, cancelados)' })
   @ApiQuery({ name: 'startDate', required: false, type: String })
   @ApiQuery({ name: 'endDate', required: false, type: String })
-  @ApiResponse({ status: 200, description: 'Resumo de pedidos', type: OrdersOverviewDto })
+  @ApiResponse({ status: 200, description: 'Resumo de pedidos (cada campo é um KPI card)' })
   async getOrdersOverview(
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
