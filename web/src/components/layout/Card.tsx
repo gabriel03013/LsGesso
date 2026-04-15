@@ -1,54 +1,53 @@
-"use client";
+import { IconCurrencyDollar, IconTrendingDown, IconTrendingUp } from "@tabler/icons-react";
 
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
-  CardContent,
+  CardAction,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useEffect, useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
+import React from "react";
+import { getKpiIcon } from "@/lib/kpi-icon-helper";
 
-type CardProps = {
-  icon: React.ReactNode;
-  title: string;
-  fetchData: (startDate?: Date, endDate?: Date) => Promise<string>;
-};
+interface DashboardCardProps {
+  title: string,
+  data: string,
+  type: "money" | "number" | "percentage",
+  description?: string,
+  icon?: string,
+  isTrendingUp?: boolean,
+  trendingPercentage?: number,
+}
 
-const AppCard = ({ icon, title, fetchData }: CardProps) => {
-  const [output, setOutput] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const result = await fetchData();
-        setOutput(result);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    load();
-  }, [fetchData]);
+export function DashboardCard({ title, data, type, description, icon, isTrendingUp, trendingPercentage }: DashboardCardProps) {
+  if(type === "money") {
+    data = formatCurrency(+data);
+  } else if(type === "percentage") {
+    data = `${data}%`;
+  } else {
+    data = data.toString();
+  }
+  const iconElement = getKpiIcon(icon || "");
 
   return (
-    <Card className="flex flex-col gap-4 w-[20%] h-[30%]">
-      <CardHeader>
-        <CardTitle className="flex justify-between items-center">
-          <div className="bg-blue-500 p-2 rounded-full">{icon}</div>
-          <ArrowUpRight />
-        </CardTitle>
-      </CardHeader>
-
-      <CardContent className="text-2xl font-normal flex flex-col gap-2">
-        <h2 className="text-base text-stone-500">{title}</h2>
-
-        {loading ? "Carregando..." : output}
-      </CardContent>
-    </Card>
+      <Card className="@container/card">
+        <CardHeader>
+          <CardDescription className="flex gap-2 items-center">{title}</CardDescription>
+          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+            {data}
+          </CardTitle>
+          
+        </CardHeader>
+        <CardFooter className="flex-col items-start gap-1.5 text-sm">
+          <div className="line-clamp-1 flex gap-2 font-medium">
+            {description}
+          </div>
+        </CardFooter>
+      </Card>
   );
-};
-
-export default AppCard;
+}
