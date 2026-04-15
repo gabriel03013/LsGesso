@@ -1,36 +1,48 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { KpiCategory } from '../enums/kpi-category.enum';
+import { KpiIcon } from '../enums/kpi-icon.enum';
 
-// * OVERVIEW
+// * OVERVIEW — flat KPI card array (matches IResponseDashboardKPIs)
 
-export class OrdersOverviewDto {
-  @ApiProperty({ example: 200 })
-  total: number;
+export class KpiCardDto {
+  @ApiProperty({ example: 'Total de Pedidos' })
+  title: string;
 
-  @ApiProperty({
-    example: { paid: 90, inProgress: 20, completed: 50, canceled: 6, budget: 12, maintenance: 22 },
-  })
-  byStatus: {
-    paid: number;
-    inProgress: number;
-    completed: number;
-    canceled: number;
-    budget: number;
-    maintenance: number;
-  };
+  @ApiProperty({ example: 'Todos os pedidos no período' })
+  description: string;
+
+  @ApiProperty({ example: '200' })
+  data: string;
+
+  @ApiProperty({ enum: ['money', 'number', 'percentage'], example: 'number' })
+  type: 'money' | 'number' | 'percentage';
+
+  @ApiProperty({ enum: KpiIcon, example: KpiIcon.CLIPBOARD_LIST })
+  icon: KpiIcon;
+
+  @ApiProperty({ enum: KpiCategory, example: KpiCategory.ORDER })
+  category: KpiCategory;
+
+  @ApiPropertyOptional({ example: true })
+  isTrendingUp?: boolean;
+
+  @ApiPropertyOptional({ example: 12.5 })
+  trendingPercentage?: number;
 }
 
+// kept for financial charts tab — each field is a KPI card
 export class FinancialOverviewDto {
-  @ApiProperty({ example: 45000.0 })
-  totalNetRevenue: number;
+  @ApiProperty({ type: KpiCardDto })
+  totalNetRevenue: KpiCardDto;
 
-  @ApiProperty({ example: 50000.0 })
-  totalGrossRevenue: number;
+  @ApiProperty({ type: KpiCardDto })
+  totalGrossRevenue: KpiCardDto;
 
-  @ApiProperty({ example: 5000.0 })
-  totalDiscount: number;
+  @ApiProperty({ type: KpiCardDto })
+  totalDiscount: KpiCardDto;
 
-  @ApiProperty({ example: 35000.0 })
-  paidNetRevenue: number;
+  @ApiProperty({ type: KpiCardDto })
+  paidNetRevenue: KpiCardDto;
 }
 
 export class DiscountImpactItemDto {
@@ -55,19 +67,8 @@ export class RoomsPerOrderItemDto {
   total: number;
 }
 
-export class DashboardOverviewDto {
-  @ApiProperty({ type: OrdersOverviewDto })
-  orders: OrdersOverviewDto;
-
-  @ApiProperty({ type: FinancialOverviewDto })
-  financial: FinancialOverviewDto;
-
-  @ApiProperty({ type: [DiscountImpactItemDto] })
-  discountImpact: DiscountImpactItemDto[];
-
-  @ApiProperty({ type: [RoomsPerOrderItemDto] })
-  avgRoomsPerOrder: RoomsPerOrderItemDto[];
-}
+// DashboardOverviewDto is now just KpiCardDto[] — no wrapper class needed.
+// The endpoint returns KpiCardDto[] directly.
 
 // * ORDERS CHARTS
 
@@ -200,8 +201,8 @@ export class ProductsChartsDto {
 }
 
 export class DashboardAllDto {
-  @ApiProperty({ type: DashboardOverviewDto })
-  overview: DashboardOverviewDto;
+  @ApiProperty({ type: [KpiCardDto] })
+  overview: KpiCardDto[];
 
   @ApiProperty({ type: OrdersChartsDto })
   ordersCharts: OrdersChartsDto;
