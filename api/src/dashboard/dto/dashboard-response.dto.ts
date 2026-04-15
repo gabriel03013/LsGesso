@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ChartType } from '../enums/chart-type.enum';
 import { KpiCategory } from '../enums/kpi-category.enum';
 import { KpiIcon } from '../enums/kpi-icon.enum';
 
@@ -165,39 +166,52 @@ export class RevenueByProductTypeItemDto {
   total_revenue: number;
 }
 
+// * GENERIC CHART WRAPPER
+
+export class ChartResponseDto<T = any> {
+  @ApiProperty({ example: 'Tendência Mensal' })
+  title: string;
+
+  @ApiProperty({ enum: ChartType, example: ChartType.AREA })
+  chartType: ChartType;
+
+  @ApiProperty()
+  data: T[];
+}
+
 // * GROUPED CHART RESPONSES (one per tab)
 
 export class OrdersChartsDto {
-  @ApiProperty({ type: [OrdersMonthlyTrendItemDto] })
-  monthlyTrend: OrdersMonthlyTrendItemDto[];
+  @ApiProperty({ type: ChartResponseDto })
+  monthlyTrend: ChartResponseDto<OrdersMonthlyTrendItemDto>;
 
-  @ApiProperty({ type: [TopEmployeeItemDto] })
-  topEmployees: TopEmployeeItemDto[];
+  @ApiProperty({ type: ChartResponseDto })
+  topEmployees: ChartResponseDto<TopEmployeeItemDto>;
 
-  @ApiProperty({ type: [RoomsPerOrderItemDto] })
-  roomsPerOrder: RoomsPerOrderItemDto[];
+  @ApiProperty({ type: ChartResponseDto })
+  roomsPerOrder: ChartResponseDto<RoomsPerOrderItemDto>;
 
-  @ApiProperty({ type: [OrdersByStatusItemDto] })
-  byStatus: OrdersByStatusItemDto[];
+  @ApiProperty({ type: ChartResponseDto })
+  byStatus: ChartResponseDto<OrdersByStatusItemDto>;
 }
 
 export class FinancialChartsDto {
-  @ApiProperty({ type: [DiscountImpactItemDto] })
-  discountImpact: DiscountImpactItemDto[];
+  @ApiProperty({ type: ChartResponseDto })
+  discountImpact: ChartResponseDto<DiscountImpactItemDto>;
 
-  @ApiProperty({ type: [MonthlyGrossVsNetItemDto] })
-  monthlyGrossVsNet: MonthlyGrossVsNetItemDto[];
+  @ApiProperty({ type: ChartResponseDto })
+  monthlyGrossVsNet: ChartResponseDto<MonthlyGrossVsNetItemDto>;
 
   @ApiProperty({ type: FinancialOverviewDto })
   overview: FinancialOverviewDto;
 }
 
 export class ProductsChartsDto {
-  @ApiProperty({ type: [TopSellingProductItemDto] })
-  topSelling: TopSellingProductItemDto[];
+  @ApiProperty({ type: ChartResponseDto })
+  topSelling: ChartResponseDto<TopSellingProductItemDto>;
 
-  @ApiProperty({ type: [RevenueByProductTypeItemDto] })
-  revenueByType: RevenueByProductTypeItemDto[];
+  @ApiProperty({ type: ChartResponseDto })
+  revenueByType: ChartResponseDto<RevenueByProductTypeItemDto>;
 }
 
 export class DashboardAllDto {

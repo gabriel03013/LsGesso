@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DashboardOrdersService } from './dashboard-orders.service';
 import { DashboardFinancialService } from './dashboard-financial.service';
 import { DashboardProductsService } from './dashboard-products.service';
+import { ChartType } from './enums/chart-type.enum';
 import { IResponseDashboardKPIs } from './interfaces/dashboard-kpi-response.interface';
 
 @Injectable()
@@ -36,10 +37,26 @@ export class DashboardService {
       ]);
 
     return {
-      monthlyTrend,
-      topEmployees,
-      roomsPerOrder,
-      byStatus,
+      monthlyTrend: {
+        title: 'Tendência Mensal',
+        chartType: ChartType.AREA,
+        data: monthlyTrend,
+      },
+      topEmployees: {
+        title: 'Top Funcionários por Receita',
+        chartType: ChartType.BAR,
+        data: topEmployees,
+      },
+      roomsPerOrder: {
+        title: 'Cômodos por Pedido',
+        chartType: ChartType.BAR,
+        data: roomsPerOrder,
+      },
+      byStatus: {
+        title: 'Pedidos por Status',
+        chartType: ChartType.PIE,
+        data: byStatus,
+      },
     };
   }
 
@@ -53,8 +70,16 @@ export class DashboardService {
       ]);
 
     return {
-      discountImpact,
-      monthlyGrossVsNet,
+      discountImpact: {
+        title: 'Impacto dos Descontos',
+        chartType: ChartType.BAR,
+        data: discountImpact,
+      },
+      monthlyGrossVsNet: {
+        title: 'Receita Bruta vs Líquida',
+        chartType: ChartType.AREA,
+        data: monthlyGrossVsNet,
+      },
       overview,
     };
   }
@@ -67,8 +92,16 @@ export class DashboardService {
     ]);
 
     return {
-      topSelling,
-      revenueByType,
+      topSelling: {
+        title: 'Produtos Mais Vendidos',
+        chartType: ChartType.BAR,
+        data: topSelling,
+      },
+      revenueByType: {
+        title: 'Receita por Categoria',
+        chartType: ChartType.PIE,
+        data: revenueByType,
+      },
     };
   }
 
