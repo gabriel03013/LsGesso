@@ -31,6 +31,7 @@ export type ChartSeries = {
 
 export type ChartResponse<T> = {
   title: string
+  description: string
   chartType: ChartType
   xKey: string
   series: ChartSeries[]
