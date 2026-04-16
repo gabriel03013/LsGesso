@@ -183,6 +183,9 @@ export class ChartResponseDto<T = any> {
   @ApiProperty({ example: 'Tendência Mensal' })
   title: string;
 
+  @ApiProperty({ example: 'Evolução de pedidos e receita ao longo dos meses' })
+  description: string;
+
   @ApiProperty({ enum: ChartType, example: ChartType.AREA })
   chartType: ChartType;
 

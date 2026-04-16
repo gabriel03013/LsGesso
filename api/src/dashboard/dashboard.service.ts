@@ -45,6 +45,7 @@ export class DashboardService {
     return {
       monthlyTrend: {
         title: 'Tendência Mensal',
+        description: 'Evolução de pedidos e receita ao longo dos meses',
         chartType: ChartType.AREA,
         xKey: 'month',
         series: [
@@ -55,6 +56,7 @@ export class DashboardService {
       },
       topEmployees: {
         title: 'Top Funcionários por Receita',
+        description: 'Ranking dos funcionários que mais geraram receita',
         chartType: ChartType.BAR,
         xKey: 'name',
         series: [
@@ -65,6 +67,7 @@ export class DashboardService {
       },
       roomsPerOrder: {
         title: 'Cômodos por Pedido',
+        description: 'Quantos pedidos têm 1, 2, 3 ou mais cômodos',
         chartType: ChartType.BAR,
         xKey: 'rooms',
         series: [
@@ -74,6 +77,7 @@ export class DashboardService {
       },
       byStatus: {
         title: 'Pedidos por Status',
+        description: 'Distribuição dos pedidos por situação atual',
         chartType: ChartType.PIE,
         xKey: 'status',
         series: [
@@ -96,6 +100,7 @@ export class DashboardService {
     return {
       discountImpact: {
         title: 'Impacto dos Descontos',
+        description: 'Comparação entre pedidos com e sem desconto aplicado',
         chartType: ChartType.BAR,
         xKey: 'group',
         series: [
@@ -107,6 +112,7 @@ export class DashboardService {
       },
       monthlyGrossVsNet: {
         title: 'Receita Bruta vs Líquida',
+        description: 'Comparação mensal entre receita bruta, líquida e descontos',
         chartType: ChartType.AREA,
         xKey: 'month',
         series: [
@@ -130,6 +136,7 @@ export class DashboardService {
     return {
       topSelling: {
         title: 'Produtos Mais Vendidos',
+        description: 'Ranking dos produtos com maior volume de vendas',
         chartType: ChartType.BAR,
         xKey: 'name',
         series: [
@@ -140,6 +147,7 @@ export class DashboardService {
       },
       revenueByType: {
         title: 'Receita por Categoria',
+        description: 'Proporção do faturamento por tipo de produto',
         chartType: ChartType.PIE,
         xKey: 'type',
         series: [
