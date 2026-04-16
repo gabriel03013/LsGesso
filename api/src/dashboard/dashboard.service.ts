@@ -46,21 +46,39 @@ export class DashboardService {
       monthlyTrend: {
         title: 'Tendência Mensal',
         chartType: ChartType.AREA,
+        xKey: 'month',
+        series: [
+          { dataKey: 'orders_count', label: 'Qtd. Pedidos', color: 'var(--chart-1)' },
+          { dataKey: 'net_revenue', label: 'Receita Líquida', color: 'var(--chart-2)' },
+        ],
         data: monthlyTrend,
       },
       topEmployees: {
         title: 'Top Funcionários por Receita',
         chartType: ChartType.BAR,
+        xKey: 'name',
+        series: [
+          { dataKey: 'total_revenue', label: 'Receita', color: 'var(--chart-1)' },
+          { dataKey: 'orders_count', label: 'Pedidos', color: 'var(--chart-2)' },
+        ],
         data: topEmployees,
       },
       roomsPerOrder: {
         title: 'Cômodos por Pedido',
         chartType: ChartType.BAR,
+        xKey: 'rooms',
+        series: [
+          { dataKey: 'total', label: 'Qtd. Pedidos', color: 'var(--chart-1)' },
+        ],
         data: roomsPerOrder,
       },
       byStatus: {
         title: 'Pedidos por Status',
         chartType: ChartType.PIE,
+        xKey: 'status',
+        series: [
+          { dataKey: 'total', label: 'Pedidos' },
+        ],
         data: byStatus,
       },
     };
@@ -79,11 +97,23 @@ export class DashboardService {
       discountImpact: {
         title: 'Impacto dos Descontos',
         chartType: ChartType.BAR,
+        xKey: 'group',
+        series: [
+          { dataKey: 'orders_count', label: 'Qtd. Pedidos', color: 'var(--chart-1)' },
+          { dataKey: 'avg_ticket', label: 'Ticket Médio', color: 'var(--chart-2)' },
+          { dataKey: 'total_revenue', label: 'Receita Total', color: 'var(--chart-3)' },
+        ],
         data: discountImpact,
       },
       monthlyGrossVsNet: {
         title: 'Receita Bruta vs Líquida',
         chartType: ChartType.AREA,
+        xKey: 'month',
+        series: [
+          { dataKey: 'gross_revenue', label: 'Receita Bruta', color: 'var(--chart-1)' },
+          { dataKey: 'net_revenue', label: 'Receita Líquida', color: 'var(--chart-2)' },
+          { dataKey: 'total_discount', label: 'Descontos', color: 'var(--chart-3)' },
+        ],
         data: monthlyGrossVsNet,
       },
       overview,
@@ -101,11 +131,20 @@ export class DashboardService {
       topSelling: {
         title: 'Produtos Mais Vendidos',
         chartType: ChartType.BAR,
+        xKey: 'name',
+        series: [
+          { dataKey: 'total_quantity', label: 'Qtd. Vendida', color: 'var(--chart-1)' },
+          { dataKey: 'total_revenue', label: 'Receita', color: 'var(--chart-2)' },
+        ],
         data: topSelling,
       },
       revenueByType: {
         title: 'Receita por Categoria',
         chartType: ChartType.PIE,
+        xKey: 'type',
+        series: [
+          { dataKey: 'total_revenue', label: 'Receita' },
+        ],
         data: revenueByType,
       },
     };
