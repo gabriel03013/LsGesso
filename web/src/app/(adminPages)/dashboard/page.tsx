@@ -1,15 +1,16 @@
 "use client";
 
-import { AppSidebar } from "@/components/app-sidebar";
-import { ChartAreaInteractive } from "@/components/chart-area-interactive";
+import { AppSidebar } from "@/components/Sidebar/app-sidebar";
+import { ChartAreaInteractive } from "@/components/Charts/chart-types/area-chart";
 import { DataTable } from "@/components/data-table";
-import { SectionCards } from "@/components/section-cards";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/services/api";
 import { DashboardCard } from "@/components/layout/Card";
 import { KPI } from "@/types/kpi";
+import { ChartLineInteractive } from "@/components/Charts/chart-types/line-chart";
+import { SearchForm } from "@/components/search-form";
 
 export default function Page() {
   const { data } = useQuery({
@@ -53,8 +54,12 @@ export default function Page() {
                 ))}
               </div>
 
-              <div className="px-4 lg:px-6">
+              <div className="px-4 lg:px-6 flex flex-col gap-4">
                 <ChartAreaInteractive />
+                <ChartLineInteractive />
+              </div>
+              <div className="px-4 lg:px-6">
+                
               </div>
             </div>
           </div>
