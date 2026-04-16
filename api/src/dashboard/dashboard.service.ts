@@ -4,6 +4,12 @@ import { DashboardFinancialService } from './dashboard-financial.service';
 import { DashboardProductsService } from './dashboard-products.service';
 import { ChartType } from './enums/chart-type.enum';
 import { IResponseDashboardKPIs } from './interfaces/dashboard-kpi-response.interface';
+import {
+  OrdersChartsDto,
+  FinancialChartsDto,
+  ProductsChartsDto,
+  DashboardAllDto,
+} from './dto/dashboard-response.dto';
 
 @Injectable()
 export class DashboardService {
@@ -27,7 +33,7 @@ export class DashboardService {
   }
 
   // All charts for the "Orders" tab
-  async getOrdersCharts(startDate?: Date, endDate?: Date) {
+  async getOrdersCharts(startDate?: Date, endDate?: Date): Promise<OrdersChartsDto> {
     const [monthlyTrend, topEmployees, roomsPerOrder, byStatus] =
       await Promise.all([
         this.orders.getOrdersMonthlyTrend(startDate, endDate),
@@ -61,7 +67,7 @@ export class DashboardService {
   }
 
   // All charts for the "Financial" tab
-  async getFinancialCharts(startDate?: Date, endDate?: Date) {
+  async getFinancialCharts(startDate?: Date, endDate?: Date): Promise<FinancialChartsDto> {
     const [discountImpact, monthlyGrossVsNet, overview] =
       await Promise.all([
         this.financial.getDiscountImpact(startDate, endDate),
@@ -85,7 +91,7 @@ export class DashboardService {
   }
 
   // All charts for the "Products" tab
-  async getProductsCharts(startDate?: Date, endDate?: Date) {
+  async getProductsCharts(startDate?: Date, endDate?: Date): Promise<ProductsChartsDto> {
     const [topSelling, revenueByType] = await Promise.all([
       this.products.getTopSellingProducts(startDate, endDate, 10),
       this.products.getRevenueByProductType(startDate, endDate),
@@ -106,7 +112,7 @@ export class DashboardService {
   }
 
   // Everything — KPIs + all charts in a single request
-  async getAll(startDate?: Date, endDate?: Date) {
+  async getAll(startDate?: Date, endDate?: Date): Promise<DashboardAllDto> {
     const [overview, ordersCharts, financialCharts, productsCharts] =
       await Promise.all([
         this.getOverview(startDate, endDate),
