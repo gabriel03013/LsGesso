@@ -168,12 +168,29 @@ export class RevenueByProductTypeItemDto {
 
 // * GENERIC CHART WRAPPER
 
+export class ChartSeriesDto {
+  @ApiProperty({ example: 'orders_count' })
+  dataKey: string;
+
+  @ApiProperty({ example: 'Qtd. Pedidos' })
+  label: string;
+
+  @ApiPropertyOptional({ example: 'var(--chart-1)' })
+  color?: string;
+}
+
 export class ChartResponseDto<T = any> {
   @ApiProperty({ example: 'Tendência Mensal' })
   title: string;
 
   @ApiProperty({ enum: ChartType, example: ChartType.AREA })
   chartType: ChartType;
+
+  @ApiProperty({ example: 'month', description: 'Campo usado no eixo X (ou label do pie)' })
+  xKey: string;
+
+  @ApiProperty({ type: [ChartSeriesDto], description: 'Séries de dados (eixo Y / fatias)' })
+  series: ChartSeriesDto[];
 
   @ApiProperty()
   data: T[];
