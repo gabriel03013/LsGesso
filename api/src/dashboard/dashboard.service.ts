@@ -83,6 +83,14 @@ export class DashboardService {
         series: [
           { dataKey: 'total', label: 'Pedidos' },
         ],
+        colorMap: {
+          'Pago': 'var(--success)',
+          'Concluído': 'var(--chart-2)',
+          'Em andamento': 'var(--warning)',
+          'Orçamento': 'var(--info)',
+          'Manutenção': 'var(--chart-4)',
+          'Cancelado': 'var(--destructive)',
+        },
         data: byStatus,
       },
     };

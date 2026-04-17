@@ -195,6 +195,9 @@ export class ChartResponseDto<T = any> {
   @ApiProperty({ type: [ChartSeriesDto], description: 'Séries de dados (eixo Y / fatias)' })
   series: ChartSeriesDto[];
 
+  @ApiPropertyOptional({ example: { Pago: 'var(--success)', Cancelado: 'var(--destructive)' }, description: 'Mapa de cores por valor do xKey (ex: status → cor semântica)' })
+  colorMap?: Record<string, string>;
+
   @ApiProperty()
   data: T[];
 }
