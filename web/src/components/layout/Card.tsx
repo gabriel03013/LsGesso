@@ -42,36 +42,36 @@ export function DashboardCard({
   const hasTrending = isTrendingUp !== undefined && trendingPercentage !== undefined;
 
   return (
-    <Card className={cn("@container/card relative overflow-hidden", className)}>
-      <CardHeader className="flex flex-row items-start justify-between gap-2">
-        <div className="flex flex-col gap-1.5">
-          <CardDescription className="text-sm font-medium">
+    <Card className={cn("@container/card", className)}>
+      <CardHeader className="flex flex-row items-center justify-between gap-3">
+        <div className="flex flex-col gap-1 min-w-0">
+          <CardDescription className="text-xs font-medium uppercase tracking-widest">
             {title}
           </CardDescription>
-          <CardTitle className="text-2xl font-bold tabular-nums tracking-tight @[250px]/card:text-3xl">
+          <CardTitle className="text-xl font-semibold tabular-nums @[250px]/card:text-2xl">
             {formattedData}
           </CardTitle>
         </div>
         {iconElement && (
-          <div className="rounded-lg bg-primary/10 p-2.5 text-primary shrink-0">
+          <div className="rounded-md bg-primary/10 p-2 text-primary shrink-0 [&>svg]:size-4">
             {iconElement}
           </div>
         )}
       </CardHeader>
 
       {(description || hasTrending) && (
-        <CardFooter className="flex items-center gap-2 text-sm text-muted-foreground">
+        <CardFooter className="flex items-center gap-2 text-xs text-muted-foreground">
           {hasTrending && (
             <span
               className={cn(
-                "inline-flex items-center gap-1 text-xs font-semibold",
+                "inline-flex items-center gap-1 font-semibold",
                 isTrendingUp ? "text-success" : "text-destructive"
               )}
             >
               {isTrendingUp ? (
-                <IconTrendingUp className="size-3.5" />
+                <IconTrendingUp className="size-3" />
               ) : (
-                <IconTrendingDown className="size-3.5" />
+                <IconTrendingDown className="size-3" />
               )}
               {trendingPercentage}%
             </span>
