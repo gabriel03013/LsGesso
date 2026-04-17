@@ -2,6 +2,7 @@ import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react";
 
 import {
   Card,
+  CardAction,
   CardDescription,
   CardFooter,
   CardHeader,
@@ -39,23 +40,24 @@ export function DashboardCard({
   }
 
   const iconElement = icon ? getKpiIcon(icon) : null;
-  const hasTrending = isTrendingUp !== undefined && trendingPercentage !== undefined;
+  const hasTrending =
+    isTrendingUp !== undefined && trendingPercentage !== undefined;
 
   return (
     <Card className={cn("@container/card", className)}>
-      <CardHeader className="flex flex-row items-center justify-between gap-3">
-        <div className="flex flex-col gap-1 min-w-0">
-          <CardDescription className="text-xs font-medium uppercase tracking-widest">
-            {title}
-          </CardDescription>
-          <CardTitle className="text-xl font-semibold tabular-nums @[250px]/card:text-2xl">
-            {formattedData}
-          </CardTitle>
-        </div>
+      <CardHeader>
+        <CardDescription className="text-sm font-medium">
+          {title}
+        </CardDescription>
+        <CardTitle className="text-lg font-semibold tabular-nums @[250px]/card:text-xl">
+          {formattedData}
+        </CardTitle>
         {iconElement && (
-          <div className="rounded-md bg-primary/10 p-2 text-primary shrink-0 [&>svg]:size-4">
-            {iconElement}
-          </div>
+          <CardAction>
+            <div className="rounded-md bg-primary/10 p-1.5 text-primary [&>svg]:size-4">
+              {iconElement}
+            </div>
+          </CardAction>
         )}
       </CardHeader>
 
@@ -76,9 +78,7 @@ export function DashboardCard({
               {trendingPercentage}%
             </span>
           )}
-          {description && (
-            <span className="line-clamp-1">{description}</span>
-          )}
+          {description && <span className="line-clamp-1">{description}</span>}
         </CardFooter>
       )}
     </Card>
