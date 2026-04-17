@@ -23,12 +23,21 @@ export default function ChartCard({
   className,
 }: ChartCardProps) {
   return (
-    <Card className={cn("@container/card overflow-hidden", className)}>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-base font-semibold">{title}</CardTitle>
-        <CardDescription className="text-sm">{description}</CardDescription>
+    <Card
+      className={cn(
+        "@container/card border-border/60 transition-shadow hover:shadow-md",
+        className
+      )}
+    >
+      <CardHeader className="pb-0">
+        <CardTitle className="text-sm font-semibold tracking-tight">
+          {title}
+        </CardTitle>
+        <CardDescription className="text-xs text-muted-foreground/70 leading-relaxed">
+          {description}
+        </CardDescription>
       </CardHeader>
-      <CardContent className="px-2 pt-2 pb-4 sm:px-6">
+      <CardContent className="px-3 pt-3 pb-4 sm:px-5">
         {children}
       </CardContent>
     </Card>
