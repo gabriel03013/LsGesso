@@ -2,16 +2,20 @@
 
 import { ChartResponse } from "@/types/dashboard"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart"
-import { AreaChart, Area, XAxis, CartesianGrid } from "recharts"
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts"
 
-export default function AreaChartView({ chart }: { chart: ChartResponse<unknown> }) {
+export default function BarChartView({ chart }: { chart: ChartResponse<unknown> }) {
   const config = Object.fromEntries(
     chart.series.map(s => [s.dataKey, { label: s.label, color: s.color }])
   )
 
   return (
     <ChartContainer config={config} className="aspect-auto h-[250px] w-full">
-      <AreaChart data={chart.data as Record<string, unknown>[]}>
+      <BarChart
+        accessibilityLayer
+        data={chart.data as Record<string, unknown>[]}
+        margin={{ left: 12, right: 12 }}
+      >
         <CartesianGrid vertical={false} />
         <XAxis
           dataKey={chart.xKey}
@@ -19,19 +23,17 @@ export default function AreaChartView({ chart }: { chart: ChartResponse<unknown>
           axisLine={false}
           tickMargin={8}
         />
+        <YAxis tickLine={false} axisLine={false} tickMargin={8} />
         <ChartTooltip content={<ChartTooltipContent />} />
         {chart.series.map(s => (
-          <Area
+          <Bar
             key={s.dataKey}
             dataKey={s.dataKey}
-            type="monotone"
             fill={`var(--color-${s.dataKey})`}
-            stroke={`var(--color-${s.dataKey})`}
-            fillOpacity={0.15}
-            strokeWidth={2}
+            radius={[4, 4, 0, 0]}
           />
         ))}
-      </AreaChart>
+      </BarChart>
     </ChartContainer>
   )
 }
