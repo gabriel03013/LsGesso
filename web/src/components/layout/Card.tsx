@@ -45,18 +45,18 @@ export function DashboardCard({
 
   return (
     <Card className={cn("@container/card py-5", className)}>
-      <CardHeader className="gap-1 px-5">
-        <CardDescription>{title}</CardDescription>
-        <CardTitle className="text-2xl tabular-nums">
-          {formattedData}
-        </CardTitle>
-        {iconElement && (
-          <CardAction className="self-center">
-            <div className="rounded-lg bg-muted p-2 text-muted-foreground [&>svg]:size-4">
+      <CardHeader className="gap-2 px-5">
+        <CardDescription className="flex items-center gap-2">
+          {iconElement && (
+            <div className="rounded-lg bg-muted p-1.5 text-muted-foreground [&>svg]:size-4">
               {iconElement}
             </div>
-          </CardAction>
-        )}
+          )}
+          {title}
+        </CardDescription>
+        <CardTitle className="text-[26px] tabular-nums">
+          {formattedData}
+        </CardTitle>
       </CardHeader>
 
       {(description || hasTrending) && (

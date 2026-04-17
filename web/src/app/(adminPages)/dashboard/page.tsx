@@ -1,16 +1,14 @@
 "use client";
 
 import { AppSidebar } from "@/components/Sidebar/app-sidebar";
-import { ChartAreaInteractive } from "@/components/Charts/chart-types/area-chart";
-import { DataTable } from "@/components/data-table";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/services/api";
 import { DashboardCard } from "@/components/layout/Card";
 import { KPI } from "@/types/kpi";
-import { ChartLineInteractive } from "@/components/Charts/chart-types/line-chart";
-import { SearchForm } from "@/components/search-form";
+import { OrdersCharts } from "@/types/dashboard";
+import Chart from "@/components/Charts/chart";
 
 export default function Page() {
   const { data } = useQuery({
@@ -21,8 +19,16 @@ export default function Page() {
     },
   });
 
-  const financialKPIs = data?.filter((kpi) => kpi.category === "financial") || [];
+  const financialKPIs =
+    data?.filter((kpi) => kpi.category === "financial") || [];
 
+  const { data: chartsData } = useQuery<OrdersCharts | undefined>({
+    queryKey: ["dashboard-charts"],
+    queryFn: async () => {
+      const data = await api("/dashboard/orders/charts") as OrdersCharts;
+      return data;
+    },
+  });
 
   return (
     <SidebarProvider
@@ -39,7 +45,7 @@ export default function Page() {
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-              <div className="grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card">
+              <div className="grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
                 {financialKPIs.map((kpi) => (
                   <DashboardCard
                     key={kpi.title}
@@ -55,12 +61,9 @@ export default function Page() {
               </div>
 
               <div className="px-4 lg:px-6 flex flex-col gap-4">
-                <ChartAreaInteractive />
-                <ChartLineInteractive />
+                {chartsData && <Chart chart={chartsData.byStatus} className="w-100 h-100" />}
               </div>
-              <div className="px-4 lg:px-6">
-                
-              </div>
+              <div className="px-4 lg:px-6"></div>
             </div>
           </div>
         </div>
