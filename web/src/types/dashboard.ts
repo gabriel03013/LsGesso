@@ -35,6 +35,7 @@ export type ChartResponse<T> = {
   chartType: ChartType
   xKey: string
   series: ChartSeries[]
+  colorMap?: Record<string, string>
   data: T[]
 }
 

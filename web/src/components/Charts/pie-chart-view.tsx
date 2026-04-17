@@ -4,7 +4,7 @@ import { ChartResponse } from "@/types/dashboard"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart"
 import { Pie, PieChart } from "recharts"
 
-const PIE_COLORS = [
+const FALLBACK_COLORS = [
   "var(--chart-1)",
   "var(--chart-2)",
   "var(--chart-3)",
@@ -15,17 +15,18 @@ const PIE_COLORS = [
 export default function PieChartView({ chart }: { chart: ChartResponse<unknown> }) {
   const rawData = chart.data as Record<string, unknown>[]
 
-  const dataWithColors = rawData.map((item, i) => ({
-    ...item,
-    fill: PIE_COLORS[i % PIE_COLORS.length],
-  }))
+  const dataWithColors = rawData.map((item, i) => {
+    const key = String(item[chart.xKey] ?? i)
+    const color = chart.colorMap?.[key] ?? FALLBACK_COLORS[i % FALLBACK_COLORS.length]
+    return { ...item, fill: color }
+  })
 
-  // Config: one entry per slice (xKey value) for tooltip labels
   const config = Object.fromEntries(
-    rawData.map((item, i) => [
-      String(item[chart.xKey] ?? i),
-      { label: String(item[chart.xKey] ?? i), color: PIE_COLORS[i % PIE_COLORS.length] },
-    ])
+    rawData.map((item, i) => {
+      const key = String(item[chart.xKey] ?? i)
+      const color = chart.colorMap?.[key] ?? FALLBACK_COLORS[i % FALLBACK_COLORS.length]
+      return [key, { label: key, color }]
+    })
   )
 
   return (
