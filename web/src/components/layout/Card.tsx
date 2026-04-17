@@ -44,52 +44,43 @@ export function DashboardCard({
     isTrendingUp !== undefined && trendingPercentage !== undefined;
 
   return (
-    <Card
-      className={cn(
-        "@container/card group relative border-border/60 transition-shadow hover:shadow-md",
-        className
-      )}
-    >
-      <CardHeader>
-        <CardDescription className="text-xs font-medium tracking-wide text-muted-foreground/80">
-          {title}
-        </CardDescription>
-        <CardTitle className="text-lg font-semibold tabular-nums @[250px]/card:text-xl">
+    <Card className={cn("@container/card py-5", className)}>
+      <CardHeader className="gap-1 px-5">
+        <CardDescription>{title}</CardDescription>
+        <CardTitle className="text-2xl tabular-nums">
           {formattedData}
         </CardTitle>
         {iconElement && (
-          <CardAction>
-            <div className="rounded-full bg-primary/8 p-2 text-primary/60 [&>svg]:size-3.5">
+          <CardAction className="self-center">
+            <div className="rounded-lg bg-muted p-2 text-muted-foreground [&>svg]:size-4">
               {iconElement}
             </div>
           </CardAction>
         )}
       </CardHeader>
 
-      <CardFooter className="gap-2 text-xs">
-        {hasTrending && (
-          <span
-            className={cn(
-              "inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 font-medium",
-              isTrendingUp
-                ? "bg-success/10 text-success"
-                : "bg-destructive/10 text-destructive"
-            )}
-          >
-            {isTrendingUp ? (
-              <IconTrendingUp className="size-3" />
-            ) : (
-              <IconTrendingDown className="size-3" />
-            )}
-            {trendingPercentage}%
-          </span>
-        )}
-        {description && (
-          <span className="text-muted-foreground/60 line-clamp-2 leading-relaxed">
-            {description}
-          </span>
-        )}
-      </CardFooter>
+      {(description || hasTrending) && (
+        <CardFooter className="gap-2 px-5 text-sm text-muted-foreground">
+          {hasTrending && (
+            <span
+              className={cn(
+                "inline-flex items-center gap-1 font-medium",
+                isTrendingUp ? "text-success" : "text-destructive"
+              )}
+            >
+              {isTrendingUp ? (
+                <IconTrendingUp className="size-3.5" />
+              ) : (
+                <IconTrendingDown className="size-3.5" />
+              )}
+              {trendingPercentage}%
+            </span>
+          )}
+          {description && (
+            <span className="line-clamp-2">{description}</span>
+          )}
+        </CardFooter>
+      )}
     </Card>
   );
 }

@@ -23,21 +23,12 @@ export default function ChartCard({
   className,
 }: ChartCardProps) {
   return (
-    <Card
-      className={cn(
-        "@container/card border-border/60 transition-shadow hover:shadow-md",
-        className
-      )}
-    >
-      <CardHeader className="pb-0">
-        <CardTitle className="text-sm font-semibold tracking-tight">
-          {title}
-        </CardTitle>
-        <CardDescription className="text-xs text-muted-foreground/70 leading-relaxed">
-          {description}
-        </CardDescription>
+    <Card className={cn("@container/card py-5", className)}>
+      <CardHeader className="gap-1 px-5 pb-0">
+        <CardTitle className="text-base">{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
       </CardHeader>
-      <CardContent className="px-3 pt-3 pb-4 sm:px-5">
+      <CardContent className="px-4 pt-4 pb-2">
         {children}
       </CardContent>
     </Card>
